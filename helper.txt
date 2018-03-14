@@ -1,0 +1,10 @@
+g++ -o 251.out sender251.cpp patch64.o
+g++ -o 257.out sender257.cpp
+g++ -o 997.out sender997.cpp
+g++ -o A.out receiverA.cpp
+g++ -o B.out receiverB.cpp
+
+To kill 251.out we write "kill -10 <pid>" in a separate terminal
+4683
+
+To delete all messages in queues, run: ipcrm --all=msg
