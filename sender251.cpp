@@ -11,14 +11,14 @@
 
 #include "get_info.h"
 using namespace std;
-
+//MTYPE = 51
 /*
 	251 sender only sends its messages to one receiver. Make it receiverA.cpp.
 	This sender terminates on a 'kill' command from a separate terminal.
 */
 int main() {
 	cout << "wut" << endl;
-	int qid = msgget(ftok(".",'u'), 0);
+	int qid = msgget(ftok(".",'u'), IPC_CREAT|0600);
 	cout << "Pid of sender251: " << getpid() << endl;
 	// declare my message buffer
 	/*
@@ -50,7 +50,7 @@ int main() {
 	while(true){
 		do
 		{
-			randoInt = rand() % (RAND_MAX-2) + 2; //Generate message between 2 and int max. 0 and 1 are reserved to signal termination.
+			randoInt = rand() % (RAND_MAX-3) + 3; //Generate message between 3 and int max. 0, 1, & 2 are reserved to signal termination.
 		}while(randoInt%251 != 0);
 		/*
 			There is also a chance that the number can be divided by 997. This would cause issues because 997 requires acknowledgement
@@ -61,7 +61,9 @@ int main() {
 			randoInt = randoInt - 251;
 		}
 		msg.message = randoInt;
-		msgsnd(qid, (struct msgbuf *)&msg, size, 0); // sending
+		cout << "Before sending message to receiver A" << endl;
+		msgsnd(qid, (struct msgbuf *)&msg, size, 0); // HALTS
+		cout << "After sending message to receiver A" << endl;
 	}
 	exit(0);
 }
