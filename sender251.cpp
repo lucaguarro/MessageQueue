@@ -17,10 +17,12 @@ using namespace std;
 	This sender terminates on a 'kill' command from a separate terminal.
 */
 int main() {
+	msqid_ds qInfo;
 	cout << "wut" << endl;
 	int qid = msgget(ftok(".",'u'), IPC_CREAT|0600);
 	cout << "Pid of sender251: " << getpid() << endl;
 	// declare my message buffer
+	
 	/*
 		Whatever message we send between programs will go into the int message.
 		Very first field has to be a long data type and has to be listed FIRST. This is because the
@@ -61,9 +63,16 @@ int main() {
 			randoInt = randoInt - 251;
 		}
 		msg.message = randoInt;
-		cout << "Before sending message to receiver A" << endl;
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0); // HALTS
-		cout << "After sending message to receiver A" << endl;
+
+		//this do-while loop should make sure that the message queue does not get overfilled
+		do{
+			msgctl(qid, IPC_STAT, &qInfo);
+		}while((qInfo.msg_qbytes/size)-2 <= qInfo.msg_qnum); //while the number of messages in the queue are greater than or equal the max - 2
+		
+		//cout << "max bytes: " << qInfo.msg_qbytes;
+		//cout << "Num messages on queue: " << qInfo.msg_qnum << endl;
+
 	}
 	exit(0);
 }

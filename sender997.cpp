@@ -38,7 +38,7 @@ int main() {
 	do
 	{
 		randoInt = rand() % (RAND_MAX-3) + 3; //Generate message between 3 and int max. 0, 1, & 2 are reserved to signal termination.
-	}while(randoInt%997 != 0 || randoInt < 100);
+	}while(randoInt%997 != 0 && randoInt > 100);
 	while(randoInt > 100){
 		msg.mtype = 1;
 		msg.message = randoInt;
@@ -51,6 +51,8 @@ int main() {
 		cout << getpid() << ": gets reply from A" << endl;
 		cout << "reply: " << msg.message << endl;
 		
+		//9071182275048037
+		//7306916068917071136
 		//Check if receiverB is still alive. It could be dead because it ends once it gets 5000 messages.
 		if(receiverBAlive){
 			//send message to receiver B
@@ -71,7 +73,7 @@ int main() {
 		do
 		{
 			randoInt = rand() % (RAND_MAX-3) + 3; //Generate message between 3 and int max. 0, 1, & 2 are reserved to signal termination.
-		}while(randoInt%997 != 0 || randoInt < 100);
+		}while(randoInt%997 != 0 && randoInt > 100);
 	}
 	msg.message = 1;
 	msg.mtype = 1;
