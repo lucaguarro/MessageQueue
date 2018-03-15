@@ -16,7 +16,7 @@
 using namespace std;
 
 int main() {
-    cout << "r u executing boi" << endl;
+    cout << "Starting receiverA..." << endl;
 	int qid = msgget(ftok(".",'u'), IPC_CREAT|0600);
     struct buf {
 		long mtype; // required
@@ -40,20 +40,20 @@ int main() {
         //when we read a message from one that matches the error code, set XXXAlive to false
     }*/
     while(is251Alive || is997Alive){ //While either or both the senders are alive
-        cout << "Call before msgrcv! " << endl;
+        //cout << "Call before msgrcv! " << endl;
         msgrcv(qid, (struct msgbuf *)&msg, size, 1, 0);
-        cout << "Call after msgrcv! " << endl;
+        //cout << "Call after msgrcv! " << endl;
         if(msg.message == 0){ //this message code is reserved for when 251 dies
             is251Alive = false;
-            cout << "251 died confirmed" << endl;
+            cout << "Receiver A has detected that 251 died" << endl;
         }
         else if(msg.message == 1){ //this message code is reserved for when 997 dies
             is997Alive = false;
-            cout << "997 died confirmed" << endl;
+            cout << "Receiver A has detected that 997 died" << endl;
         }
         else if(msg.message == 2){
             isReceiverBAlive = false;
-            cout << "Received confirmation that receiverB has died" << endl;
+            cout << "Receiver A has detected that receiverB died" << endl;
         }
         else{ //If we get here it means that we have received a message from either 251 or 997
             cout << getpid() << ": gets reply" << endl;
@@ -62,23 +62,21 @@ int main() {
             if(msg.message % 997 == 0){
                 msg.message = 143;
                 msg.mtype = 4;
-                cout << endl << "before sending message to 997" << endl;
+                //cout << endl << "before sending message to 997" << endl;
                 msgsnd(qid, (struct msgbuf *)&msg, size, 0); //HANGING HERE
-                cout << "after sending message to 997" << endl << endl;
+                //cout << "after sending message to 997" << endl << endl;
             }
         } 
         cout << endl;
     }
     //If receiverB is already dead, we need to delete the message queue
     if(!isReceiverBAlive){
-        cout << "Deleting the message queue from Receiver A" << endl;
+        cout << "Deleting the message queue with qid: " << qid << " from Receiver A" << endl;
         msgctl (qid, IPC_RMID, NULL);
     }else{ //If not, we need to tell receiverB that this receiver is about to die
-        cout << "Attempting to message to Receiver B that I am dying" << endl;
         msg.message = 2; //fatality code
         msg.mtype = 2; //send to receiverB
         msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-        cout << "terminating messsage sent" << endl;
     }
     exit(0);
 }

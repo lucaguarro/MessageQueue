@@ -17,7 +17,7 @@ using namespace std;
 
 int main() {
     //throw 1;
-    cout << "do u execute" << endl;// code that could cause exception
+    cout << "ReceiverB starting..." << endl;// code that could cause exception
     
 	int qid = msgget(ftok(".",'u'), IPC_CREAT|0600);
     struct buf {

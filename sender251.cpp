@@ -18,7 +18,7 @@ using namespace std;
 */
 int main() {
 	msqid_ds qInfo;
-	cout << "wut" << endl;
+	cout << "Sender 251 starting..." << endl;
 	int qid = msgget(ftok(".",'u'), IPC_CREAT|0600);
 	cout << "Pid of sender251: " << getpid() << endl;
 	// declare my message buffer

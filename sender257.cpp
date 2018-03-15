@@ -14,7 +14,7 @@ using namespace std;
 	terminates when its receiver stops receiving event notification 
 */
 int main() {
-	cout << "Do you execute?" << endl;
+	cout << "Sender257 starting..." << endl;
 	int qid = msgget(ftok(".",'u'), IPC_CREAT|0600);
 	int pid = getpid();
 	// declare my message buffer
@@ -30,7 +30,6 @@ int main() {
 	srand(time(NULL));
 	
 	msg.mtype = 2; //2 for receiverB
-	cout << "entering loop" << endl;
 	int randoInt;
 	bool receiverBAlive = true;
 
@@ -38,9 +37,9 @@ int main() {
 	msg.message = 257;
 	msgsnd(qid, (struct msgbuf *)&msg, size, 0);
 	while(receiverBAlive){
-		cout << "before receiving message from self" << endl;
+		//cout << "before receiving message from self" << endl;
 		msgrcv(qid, (struct msgbuf *)&msg, size, 257,0); // read mesg
-		cout << "after receiving message from self" << endl;
+		//cout << "after receiving message from self" << endl;
 		if(msg.message==2){
 			receiverBAlive = false;
 		}
@@ -64,15 +63,15 @@ int main() {
 		*/
 		msg.mtype = 257;
 		msg.message = 257;
-		cout << "before sending message to self" << endl;
+		//cout << "before sending message to self" << endl;
 		msgsnd(qid, (struct msgbuf *)&msg, size, 0); //HALTING
-		cout << "after sending message to self" << endl;
+		//cout << "after sending message to self" << endl;
 		msg.mtype = 2;
 		msg.message = randoInt;
 		if(receiverBAlive){
-			cout << "before sending message to receiverB" << endl;
+			//cout << "before sending message to receiverB" << endl;
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0); // sending
-			cout << "after sending message to receiverB" << endl;
+			//cout << "after sending message to receiverB" << endl;
 		}
 	}
 	exit(0);
