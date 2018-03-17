@@ -1,0 +1,44 @@
+g++ -o 251.out sender251.cpp patch64.o //using patchcode
+//not using patchcode
+g++ -o 251.out sender251.cpp 
+g++ -o 257.out sender257.cpp
+g++ -o 997.out sender997.cpp
+g++ -o A.out receiverA.cpp
+g++ -o B.out receiverB.cpp
+
+
+To kill 251.out we write "kill -10 <pid>" in a separate terminal
+4683
+
+To delete all messages in queues, run: ipcrm --all=msg
+
+ipcs to check message queues
+
+to see all running processes: ps -aux | less
+
+int qid = msgget(ftok(".",'u'), IPC_EXCL|IPC_CREAT|0600); to try and create message queue no matter what. Returns -1 if already created.
+int qid = msgget(ftok(".",'u'), IPC_CREAT|0600); to create message queue if it doesnt exist. If it already does, just saves a reference to it.
+
+order to run programs:
+1. RecieverA will halt when it tries to receive a message from 997 or 251
+2. Sender997 should make receiverA receive one message at this point. Will halt until receiverB starts.
+3. Sender251 will make receiverA start receiving messages
+4. sender257 will send messages to receiverB
+5. recieverB
+
+Sender251 is stuck doing this process:
+I-->A-->E-->I in a loop
+That is:
+    1. Receive message from A that it is alive
+    2. Send message to Receiver A 
+    3. Sends message to Receiver A that it is alive
+
+ReceiverA is stuck doing this process:
+F-->A-->F-->A-->from
+That is:
+    1. Send message to 251 that it is alive
+    2. Receives real message from 251 
+
+Problem: ReceiverA never receives alive message from 251 because its numAlive gets 0
+997 was sending error message to both mtypes of receiverA. It was doing this because it wasn't sure
+where the receiverA would be. A possible solution could be to send another dummy message.
