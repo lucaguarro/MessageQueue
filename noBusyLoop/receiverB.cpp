@@ -161,6 +161,8 @@ int main()
     {
         msg.mtype = 500;
         msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+        msg.mtype = 2997;
+        msgsnd(qid, (struct msgbuf *)&msg, size, 0);
     }
 
     if (!isReceiverAAlive && !is251Alive && !is257Alive && !is997Alive)

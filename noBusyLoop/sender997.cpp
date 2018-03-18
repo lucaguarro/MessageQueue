@@ -88,8 +88,13 @@ int main() {
 			msgsnd(qid, (struct msgbuf *)&msg, size, 0); 
 			cout << "mark D" << endl;
 			msgrcv(qid, (struct msgbuf *)&msg, size, 2997, 0);
-            cout << pid << ": gets reply" << endl;
-            cout << "reply: " << msg.message << endl << endl; 
+			if(msg.message == -2){
+				isReceiverBAlive = false;
+			}
+			else{
+				cout << pid << ": gets reply" << endl;
+				cout << "reply: " << msg.message << endl << endl; 
+			}
 		}
 		do
 		{

@@ -28,6 +28,9 @@ struct buf {
 
 buf msg;
 
+/*
+    
+*/
 void sigintHandler(int sig_num)
 {
     cout << "the sig_num is: " << sig_num << endl;
@@ -35,10 +38,30 @@ void sigintHandler(int sig_num)
     int size = sizeof(msg)-sizeof(long);
     if(sig_num == SIGINT || sig_num == 10){
         msg.message = -3;
-        msg.mtype = 100;
-        msgsnd(qid, (struct msgbuf *)&msg, size, 0);
-        msg.mtype = 2511;
-        msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+        if(isReceiverAAlive){
+            cout << "A" << endl;
+            msg.mtype = 100; 
+            msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+            msg.mtype = 2511;
+            msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+        }
+        if(isReceiverBAlive){
+            msg.mtype = 200;
+            cout << "B" << endl;
+            msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+            msg.mtype = 2512;
+            msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+        }
+        if(is257Alive){
+            cout << "C" << endl;
+            msg.mtype = 400;
+            msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+        }
+        if(is997Alive){
+            cout << "D" << endl;
+            msg.mtype = 500;
+            msgsnd(qid, (struct msgbuf *)&msg, size, 0);
+        }
     }
     exit(0);
 }
@@ -61,18 +84,6 @@ int main() {
 	*/
 	int size = sizeof(msg)-sizeof(long);
 	int randoInt;
-
-
-    /*msg.message = -3;
-	msg.mtype = 100;
-	get_info(qid, (struct msgbuf *)&msg, size, 1);*/
-	/*msg.mtype = 200;
-	get_info(qid, (struct msgbuf *)&msg, size, 1);
-	msg.mtype = 400;
-	get_info(qid, (struct msgbuf *)&msg, size, 1);
-	msg.mtype = 500;
-	get_info(qid, (struct msgbuf *)&msg, size, 1);*/
-
 
     while(true){
         msg.message = 143;
@@ -115,9 +126,5 @@ int main() {
 		//cout << "mark A" << endl;
         msgsnd(qid, (struct msgbuf *)&msg, size, 0); 
     }
-
-
-
-
     exit(0);
 }
